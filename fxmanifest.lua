@@ -29,10 +29,12 @@ server_scripts {
     'server/version.lua',
     'server/queue.lua',
     'server/logs.lua',
+    'server/bridges/esx.lua',
+    'server/bridges/qbcore.lua',
     'server/event_handler.lua'
 }
 
 -- Client files
 client_scripts {
-    -- TODO: Add client files
+    'client/screenshot.lua'
 }

@@ -8,5 +8,16 @@ lgc.adjustments = {
     discordQueue = {
         interval = 500, -- 1 second
         retries = 3, -- 3 retries
+    },
+
+    logs = {
+        playerJoin = true,
+        playerLeave = true,
+        death = true,
+        shot = true,
+        command = true,  
+        resource = true, 
+        explosion = true,
+        vehicle = true,
     }
 }

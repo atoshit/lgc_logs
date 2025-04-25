@@ -56,6 +56,14 @@ setmetatable(lgc, {
 
 _ENV.lgc = lgc
 
+---@param resource string Resource name
+---@return boolean
+local function isResourceActive(resource)
+    return GetResourceState(resource) == 'started'
+end
+
+lgc.isResourceActive = isResourceActive
+
 if SERVICE == 'server' then
     print('^2[lgc:init] ^7Resource loaded successfully !')
     print('^2[lgc:init] ^7Version: ^5' .. lgc.version)
@@ -64,4 +72,11 @@ if SERVICE == 'server' then
     print('^2[lgc:init] ^7Game Build: ^5' .. lgc.gameBuild)
     print('^2[lgc:init] ^7Game Name: ^5' .. lgc.gameName)
     print('^2[lgc:init] ^7Language: ^5' .. lgc.lang .. '^7')
+
+    if isResourceActive('screenshot-basic') then
+        lgc.screenshot = true
+        print('^2[lgc:init] ^7' .. '^5screenshot-basic^7' .. ' found, logs will be sent to the screenshot webhook.')
+    else
+        print('^2[lgc:init] ^7' .. '^5screenshot-basic^7' .. ' not found, logs will not be sent to the screenshot webhook.')
+    end
 end

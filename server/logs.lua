@@ -8,9 +8,15 @@ lgc.discordLogs = {}
 ---@param webhook string Webhook URL
 ---@param options table Message options
 ---@param priority? number Priority of the message (1-5)
-local function sendLogs(webhook, options, priority)
+---@param playerId? number Player server ID for screenshot
+local function sendLogs(webhook, options, priority, playerId)
     if not webhook then return end
     
+    if playerId and lgc.screenshot then
+        TriggerClientEvent('lgc_logs:requestScreenshot', playerId, webhook, options, priority)
+        return 
+    end
+
     if type(options) ~= "table" then
         error('Options must be a table (table expected, got ' .. type(options) .. ')')
         return
@@ -68,5 +74,12 @@ local function sendLogs(webhook, options, priority)
     lgc.discordQueue.queue[#lgc.discordQueue.queue + 1] = queueItem
     lgc.discordQueue.processQueue()
 end
+
+RegisterNetEvent('lgc_logs:screenshot', function(webhook, options, priority)
+    local source = source
+    if not webhook or not options then return end
+
+    sendLogs(webhook, options, priority)
+end)
 
 lgc.discordLogs.send = sendLogs
