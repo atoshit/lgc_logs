@@ -8,23 +8,40 @@ if lgc.isResourceActive('es_extended') then
     local ESX = exports['es_extended']:getSharedObject()
 
     ---@param player number Player
-    ---@return table (id, name, label, grade, grade_name, grade_label, grade_salary, skin_male, skin_female)
+    ---@return table (name, label, grade, grade_name, grade_label, grade_salary)
     local function getPlayerJob(player)
         local xPlayer = ESX.GetPlayerFromId(player)
-        return xPlayer.getJob() or {id = 0, name = 'Unknown', label = 'Unknown', grade = 0, grade_name = 'Unknown', grade_label = 'Unknown', grade_salary = 0, skin_male = nil, skin_female = nil }
+
+        if not xPlayer then return {name = 'Unknown', label = 'Unknown'} end
+
+        local job = xPlayer.getJob()
+        return {
+            name = job.name or 'Unknown',
+            label = job.label or 'Unknown',
+        }
     end
+
     ---@param player number Player
     ---@return string
     local function getPlayerGroup(player)
         local xPlayer = ESX.GetPlayerFromId(player)
         return xPlayer.getGroup() or 'Unknown'
     end
+
     ---@param player number Player
     ---@return table (money, bank, black_money)
     local function getPlayerAccounts(player)
         local xPlayer = ESX.GetPlayerFromId(player)
-        return xPlayer.getAccounts() or {}
+
+        if not xPlayer then return {} end
+
+        local accounts = xPlayer.getAccounts()
+        return {
+            money = accounts.money or 0,
+            bank = accounts.bank or 0
+        }
     end
+
     ---@param player number Player
     ---@return string
     local function getPlayerName(player)

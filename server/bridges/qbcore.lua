@@ -11,19 +11,13 @@ if lgc.isResourceActive('qb-core') then
     ---@return table (id, name, label, grade, grade_name, grade_label, grade_salary, skin_male, skin_female)
     local function getPlayerJob(player)
         local Player = QBCore.Functions.GetPlayer(player)
-        if not Player then return {id = 0, name = 'Unknown', label = 'Unknown', grade = 0, grade_name = 'Unknown', grade_label = 'Unknown', grade_salary = 0, skin_male = nil, skin_female = nil } end
+
+        if not Player then return {name = 'Unknown', label = 'Unknown'} end
 
         local job = Player.PlayerData.job
         return {
-            id = job.id or 0,
             name = job.name or 'Unknown',
             label = job.label or 'Unknown',
-            grade = job.grade.level or 0,
-            grade_name = job.grade.name or 'Unknown',
-            grade_label = job.grade.label or 'Unknown',
-            grade_salary = job.payment or 0,
-            skin_male = nil, -- QBCore ne gère pas les skins comme ESX
-            skin_female = nil
         }
     end
 
@@ -40,12 +34,12 @@ if lgc.isResourceActive('qb-core') then
     ---@return table (money, bank, black_money)
     local function getPlayerAccounts(player)
         local Player = QBCore.Functions.GetPlayer(player)
+
         if not Player then return {} end
 
         return {
             money = Player.PlayerData.money['cash'] or 0,
-            bank = Player.PlayerData.money['bank'] or 0,
-            black_money = Player.PlayerData.money['crypto'] or 0 -- QBCore utilise 'crypto' au lieu de 'black_money'
+            bank = Player.PlayerData.money['bank'] or 0
         }
     end
 
@@ -55,8 +49,12 @@ if lgc.isResourceActive('qb-core') then
         local Player = QBCore.Functions.GetPlayer(player)
         if not Player then return 'Unknown' end
 
-        local charInfo = Player.PlayerData.charinfo
-        return string.format('%s %s', charInfo.firstname or 'Unknown', charInfo.lastname or 'Unknown')
+        local firstname = Player.PlayerData.firstname or 'Unknown'
+        local lastname = Player.PlayerData.lastname or 'Unknown'
+
+        local name = firstname .. ' ' .. lastname
+
+        return name
     end
 
     lgc.getPlayerJob = getPlayerJob
