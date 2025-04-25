@@ -16,7 +16,8 @@ local METADATA <const> = {
     repository = GRM(ENV, 'repository'), ---@type string<'https://github.com/atoshit/lgc_logs'>
     gameBuild = GetGameBuildNumber() ~= 0 or GetConvarInt('sv_enforceGameBuild', 0), ---@type number
     gameName = GetConvar('sv_projectName', 'Unknown'), ---@type string
-    locale = GetConvar('locale', 'en-US'), ---@type string
+    lang = GetConvar('locale', 'en-US'), ---@type string,
+    locales = {}
 }
 
 ---@class Lgc
@@ -42,11 +43,11 @@ local lgc = setmetatable(METADATA, {
 _ENV.lgc = lgc
 
 if SERVICE == 'server' then
-    print('^2[lgc] ^7Resource loaded successfully !')
-    print('^2[lgc] ^7Version: ^5' .. lgc.version)
-    print('^2[lgc] ^7Author: ^5' .. lgc.author)
-    print('^2[lgc] ^7Repository: ^5' .. lgc.repository)
-    print('^2[lgc] ^7Game Build: ^5' .. lgc.gameBuild)
-    print('^2[lgc] ^7Game Name: ^5' .. lgc.gameName)
-    print('^2[lgc] ^7Locale: ^5' .. lgc.locale .. '^7')
+    print('^2[lgc:init] ^7Resource loaded successfully !')
+    print('^2[lgc:init] ^7Version: ^5' .. lgc.version)
+    print('^2[lgc:init] ^7Author: ^5' .. lgc.author)
+    print('^2[lgc:init] ^7Repository: ^5' .. lgc.repository)
+    print('^2[lgc:init] ^7Game Build: ^5' .. lgc.gameBuild)
+    print('^2[lgc:init] ^7Game Name: ^5' .. lgc.gameName)
+    print('^2[lgc:init] ^7Language: ^5' .. lgc.lang .. '^7')
 end

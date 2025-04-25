@@ -18,8 +18,8 @@ repository 'https://github.com/atoshit/lgc_logs'
 
 -- Shared files
 shared_scripts {
-    'locales/*.lua',
     'shared/init.lua',
+    'locales/*.lua',
     'shared/configs/*.lua',
     'shared/functions/*.lua'
 }
