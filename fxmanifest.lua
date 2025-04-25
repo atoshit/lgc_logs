@@ -26,7 +26,10 @@ shared_scripts {
 
 -- Server files
 server_scripts {
-    'server/version.lua'
+    'server/version.lua',
+    'server/queue.lua',
+    'server/logs.lua',
+    'server/event_handler.lua'
 }
 
 -- Client files
