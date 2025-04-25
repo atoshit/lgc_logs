@@ -8,17 +8,27 @@ local ENV <const> = GetCurrentResourceName()
 local SERVICE <const> = (IsDuplicityVersion() and 'server') or 'client'
 
 local METADATA <const> = {
-    service = SERVICE,
-    env = ENV,
-    version = GRM(ENV, 'version'),
-    author = GRM(ENV, 'author'),
-    description = GRM(ENV, 'description'),
-    repository = GRM(ENV, 'repository'),
-    gameBuild = GetGameBuildNumber() ~= 0 or GetConvar('sv_enforceGameBuild', 'Unknown'),
-    gameName = GetConvar('sv_projectName', 'Unknown'),
-    locale = GetConvar('locale', 'en-US'),
+    service = SERVICE, ---@type string<'server' | 'client'>
+    env = ENV, ---@type string<'lgc_logs'>
+    version = GRM(ENV, 'version'), ---@type string
+    author = GRM(ENV, 'author'), ---@type string<'Atoshi'>
+    description = GRM(ENV, 'description'), ---@type string
+    repository = GRM(ENV, 'repository'), ---@type string<'https://github.com/atoshit/lgc_logs'>
+    gameBuild = GetGameBuildNumber() ~= 0 or GetConvarInt('sv_enforceGameBuild', 0), ---@type number
+    gameName = GetConvar('sv_projectName', 'Unknown'), ---@type string
+    locale = GetConvar('locale', 'en-US'), ---@type string
 }
 
+---@class Lgc
+---@field service string<'server' | 'client'>
+---@field env string<'lgc_logs'>
+---@field version string
+---@field author string<'Atoshi'>
+---@field description string
+---@field repository string<'https://github.com/atoshit/lgc_logs'>
+---@field gameBuild number
+---@field gameName string
+---@field locale string
 local lgc = setmetatable(METADATA, {
     _newindex = function(self, name, value)
         rawset(self, name, value)
@@ -35,7 +45,6 @@ if SERVICE == 'server' then
     print('^2[lgc] ^7Resource loaded successfully !')
     print('^2[lgc] ^7Version: ^5' .. lgc.version)
     print('^2[lgc] ^7Author: ^5' .. lgc.author)
-    --print('^2[lgc] ^7Description: ^5' .. lgc.description)
     print('^2[lgc] ^7Repository: ^5' .. lgc.repository)
     print('^2[lgc] ^7Game Build: ^5' .. lgc.gameBuild)
     print('^2[lgc] ^7Game Name: ^5' .. lgc.gameName)
