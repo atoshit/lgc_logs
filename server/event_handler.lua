@@ -26,16 +26,15 @@ local function getPlayerInfos(player)
     data.ip = GetPlayerEndpoint(player) or 'Unknown'
     data.isDead = isPlayerDead(playerPed)
     data.position = GetEntityCoords(playerPed)
+    data.job = lgc.getPlayerJob(player)
+    data.group = lgc.getPlayerGroup(player)
+    data.accounts = lgc.getPlayerAccounts(player)
+    data.name = lgc.getPlayerName(player)
+
+    lgc.debug(json.encode(data, { indent = true }), 'info')
 
     return data
 end
 
-AddEventHandler('playerDropped', function(reason)
-    local player = source
-    
-    local playerInfos = getPlayerInfos(player)
-    
-    if playerInfos then 
-    end
-end)
+
 
