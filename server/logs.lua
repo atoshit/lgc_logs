@@ -10,7 +10,6 @@ lgc.discordLogs = {}
 ---@param priority? number Priority of the message (1-5)
 ---@param playerId? number Player server ID for screenshot
 local function sendLogs(webhook, options, priority, playerId)
-    -- Debug du webhook
     lgc.debug('Attempting to send log to webhook: ' .. tostring(webhook), 'debug')
     
     if not webhook then 
@@ -23,7 +22,6 @@ local function sendLogs(webhook, options, priority, playerId)
         return
     end
 
-    -- Debug des options
     lgc.debug('Log options: ' .. json.encode(options), 'debug')
 
     local payload = {
@@ -33,9 +31,8 @@ local function sendLogs(webhook, options, priority, playerId)
         tts = options.tts or false,
     }
 
-    -- Traiter l'embed
     if options.embed then
-        payload.embeds = {options.embed} -- Utiliser directement l'embed
+        payload.embeds = {options.embed} 
     end
 
     if #payload.embeds == 0 and not payload.content then
@@ -46,7 +43,7 @@ local function sendLogs(webhook, options, priority, playerId)
     lgc.debug('Final payload: ' .. json.encode(payload), 'debug')
 
     if playerId and tonumber(playerId) > 0 then
-        if lgc.isResourceActive('screenshot-basic') then
+        if lgc.screenshot then
             lgc.debug('Requesting screenshot from player: ' .. playerId, 'debug')
 
             Wait(100)

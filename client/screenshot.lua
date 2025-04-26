@@ -2,19 +2,11 @@
 -- Created at 2025-04-25
 -- Copyright (c) Logic. Studios - All Rights Reserved
 
-local isScreenshotAvailable = lib.isResourceActive('screenshot-basic')
-
 ---@param webhook string Discord webhook URL
 ---@param options table Message options
 ---@param priority? number Priority of the message (1-5)
 local function sendScreenshot(webhook, options, priority)
-    print("AAA")
     if not webhook or not options then return end
-    
-    if not isScreenshotAvailable then
-        error('screenshot-basic is not available, please check if the resource is started')
-        return TriggerServerEvent('lgc_logs:screenshotFailed', webhook, options, priority)
-    end
 
     exports['screenshot-basic']:requestScreenshotUpload(webhook, 'files[]', function(data)
         local resp = json.decode(data)
