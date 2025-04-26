@@ -10,17 +10,21 @@ lgc.discordLogs = {}
 ---@param priority? number Priority of the message (1-5)
 ---@param playerId? number Player server ID for screenshot
 local function sendLogs(webhook, options, priority, playerId)
-    if not webhook then return end
+    -- Debug du webhook
+    lgc.debug('Attempting to send log to webhook: ' .. tostring(webhook), 'info')
     
-    if playerId and lgc.screenshot then
-        TriggerClientEvent('lgc_logs:requestScreenshot', playerId, webhook, options, priority)
+    if not webhook then 
+        lgc.debug('No webhook provided', 'error')
         return 
     end
-
+    
     if type(options) ~= "table" then
-        error('Options must be a table (table expected, got ' .. type(options) .. ')')
+        lgc.debug('Invalid options type: ' .. type(options), 'error')
         return
     end
+
+    -- Debug des options
+    lgc.debug('Log options: ' .. json.encode(options), 'info')
 
     local payload = {
         username = options.username or lgc.gameName,
@@ -29,38 +33,24 @@ local function sendLogs(webhook, options, priority, playerId)
         tts = options.tts or false,
     }
 
-    if not payload.content and not options.embed then
-        error('Message must have either content or embed (content or embed expected, got ' .. type(options.content) .. ' and ' .. type(options.embed) .. ')')
+    -- Traiter l'embed
+    if options.embed then
+        payload.embeds = {options.embed} -- Utiliser directement l'embed
+    end
+
+    if #payload.embeds == 0 and not payload.content then
+        lgc.debug('No content or embeds provided', 'error')
         return
     end
 
-    if options.embed then
-        if type(options.embed) ~= "table" then
-            error('Embed must be a table (embed expected, got ' .. type(options.embed) .. ')')
-            return
-        end
+    -- Debug du payload final
+    lgc.debug('Final payload: ' .. json.encode(payload), 'info')
 
-        local image = options.embed.image and { url = options.embed.image }
-        local thumbnail = options.embed.thumbnail and { url = options.embed.thumbnail }
-
-        payload.embeds = {
-            {
-                title = options.embed.title,
-                description = options.embed.description,
-                url = options.embed.url,
-                timestamp = options.embed.timestamp or os.date("!%Y-%m-%dT%H:%M:%SZ"),
-                color = tonumber(options.embed.color) or 7506394,
-                footer = options.embed.footer,
-                image = image, 
-                thumbnail = thumbnail, 
-                author = options.embed.author,
-                fields = options.embed.fields
-            }
-        }
-    end
-
-    if payload.content and #payload.content > 2000 then
-        payload.content = payload.content:sub(1, 1997) .. "..."
+    -- Envoyer la demande de screenshot si nécessaire
+    if playerId and GetResourceState('screenshot-basic') == 'started' then
+        lgc.debug('Requesting screenshot from player: ' .. playerId, 'info')
+        TriggerClientEvent('lgc_logs:requestScreenshot', playerId, webhook, options, priority)
+        return -- On attend le retour du screenshot avant d'envoyer
     end
 
     local queueItem = {
@@ -71,7 +61,15 @@ local function sendLogs(webhook, options, priority, playerId)
         timestamp = os.time()
     }
 
+    -- Debug de l'ajout à la queue
+    lgc.debug('Adding to queue with priority: ' .. queueItem.priority, 'info')
+    
     lgc.discordQueue.queue[#lgc.discordQueue.queue + 1] = queueItem
+    
+    -- Debug du processus de queue
+    lgc.debug('Queue length: ' .. #lgc.discordQueue.queue, 'info')
+    lgc.debug('Triggering queue process', 'info')
+    
     lgc.discordQueue.processQueue()
 end
 

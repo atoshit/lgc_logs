@@ -10,10 +10,22 @@ lgc.discordQueue = {
 }
 
 local function processQueue()
-    if lgc.discordQueue.processing or #lgc.discordQueue.queue == 0 then return end
+    lgc.debug('Processing queue...', 'info')
+    
+    if lgc.discordQueue.processing then
+        lgc.debug('Queue is already processing', 'info')
+        return
+    end
+    
+    if #lgc.discordQueue.queue == 0 then
+        lgc.debug('Queue is empty', 'info')
+        return
+    end
     
     lgc.discordQueue.processing = true
     local item = table.remove(lgc.discordQueue.queue, 1)
+    
+    lgc.debug('Processing item: ' .. json.encode(item), 'info')
     
     if item.payload.embeds then
 

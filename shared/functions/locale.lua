@@ -5,14 +5,14 @@
 ---@param str string
 ---@return string
 local function getLocale(str)
-    local locale = lgc.locales[lgc.lang]
+    local locale = lgc.locales[lgc.adjustments.locale]
 
     if not locale then 
-        lgc.debug('No locale found for :' .. lgc.lang, 'warn')
+        lgc.debug('No locale found for :' .. lgc.adjustments.locale, 'warn')
         return str 
     end
 
-    return locale[str] ~= nil and locale[str] or lgc.debug('No string matching "' .. str .. '" was found in the locale file for "' .. lgc.lang .. '"', 'warn')
+    return locale[str] ~= nil and locale[str] or lgc.debug('No string matching "' .. str .. '" was found in the locale file for "' .. lgc.adjustments.locale .. '"', 'warn')
 end
 
 lgc.locale = getLocale
