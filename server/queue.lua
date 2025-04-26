@@ -10,22 +10,22 @@ lgc.discordQueue = {
 }
 
 local function processQueue()
-    lgc.debug('Processing queue...', 'info')
+    lgc.debug('Processing queue...', 'debug')
     
     if lgc.discordQueue.processing then
-        lgc.debug('Queue is already processing', 'info')
+        lgc.debug('Queue is already processing', 'debug')
         return
     end
     
     if #lgc.discordQueue.queue == 0 then
-        lgc.debug('Queue is empty', 'info')
+        lgc.debug('Queue is empty', 'debug')
         return
     end
     
     lgc.discordQueue.processing = true
     local item = table.remove(lgc.discordQueue.queue, 1)
     
-    lgc.debug('Processing item: ' .. json.encode(item), 'info')
+    lgc.debug('Processing item: ' .. json.encode(item), 'debug')
     
     if item.payload.embeds then
 
@@ -57,7 +57,7 @@ local function processQueue()
         return
     end
 
-    lgc.debug('Sending payload: ' .. jsonPayload .. '', 'info')
+    lgc.debug('Sending payload: ' .. jsonPayload .. '', 'debug')
 
     local function callback(err, text, headers)
         if err ~= 204 and err ~= 200 then

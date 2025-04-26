@@ -7,11 +7,12 @@ local LEVELS <const> = {
     ['default'] = {level = 0, color = '^7'},
     ['info'] = {level = 1, color = '^5'},
     ['warn'] = {level = 2, color = '^3'},
-    ['fatal'] = {level = 3, color = '^1'}
+    ['fatal'] = {level = 3, color = '^1'},
+    ['debug'] = {level = 4, color = '^6'}
 }
 
 ---@param message string
----@param level string | 'default' | 'info' | 'warn' | 'fatal'
+---@param level string | 'default' | 'info' | 'warn' | 'fatal' | 'debug'
 local function debug(message, level)
     if lgc.adjustments.debugLevel < LEVELS[level].level or not lgc.adjustments.debugLevel then return end
 

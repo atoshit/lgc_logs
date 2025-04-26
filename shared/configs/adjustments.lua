@@ -3,7 +3,7 @@
 -- Copyright (c) Logic. Studios - All Rights Reserved
 
 lgc.adjustments = {
-    debugLevel = 3, -- 1 = info, 2 = warn, 3 = fatal / false to disable debug logs
+    debugLevel = 3, -- 1 = info, 2 = warn, 3 = fatal, 4 = debug / false to disable debug logs
     serverLogo = 'https://png.pngtree.com/png-clipart/20190516/original/pngtree-log-file-format-icon-design-png-image_4307740.jpg',
     locale = 'FR',
 
@@ -19,7 +19,7 @@ lgc.adjustments = {
         shot = true,
         command = true,  
         chatMessage = true,
-        resource = true, 
+        resources = true, 
         explosion = true,
         vehicle = true,
     },

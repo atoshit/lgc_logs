@@ -2,6 +2,8 @@
 -- Created at 2025-04-25
 -- Copyright (c) Logic. Studios - All Rights Reserved
 
+local GPIBT <const> = GetPlayerIdentifierByType
+
 local gameName <const> = lgc.gameName
 local serverLogo <const> = lgc.adjustments.serverLogo
 
@@ -20,13 +22,13 @@ local function getPlayerInfos(player, esx)
     local playerPed = GetPlayerPed(player)
 
     data.name = GetPlayerName(player) or 'Unknown'
-    data.license = GetPlayerIdentifierByType(player, 'license') or 'Unknown'
-    data.license2 = GetPlayerIdentifierByType(player, 'license2') or 'Unknown'
-    data.steam = GetPlayerIdentifierByType(player, 'steam') or 'Unknown'
-    data.discord = GetPlayerIdentifierByType(player, 'discord') or 'Unknown'
-    data.xbl = GetPlayerIdentifierByType(player, 'xbl') or 'Unknown'
-    data.live = GetPlayerIdentifierByType(player, 'live') or 'Unknown'
-    data.fivem = GetPlayerIdentifierByType(player, 'fivem') or 'Unknown'
+    data.license = GPIBT(player, 'license') or 'Unknown'
+    data.license2 = GPIBT(player, 'license2') or 'Unknown'
+    data.steam = GPIBT(player, 'steam') or 'Unknown'
+    data.discord = GPIBT(player, 'discord') or 'Unknown'
+    data.xbl = GPIBT(player, 'xbl') or 'Unknown'
+    data.live = GPIBT(player, 'live') or 'Unknown'
+    data.fivem = GPIBT(player, 'fivem') or 'Unknown'
     data.ip = GetPlayerEndpoint(player) or 'Unknown'
 
     if esx then
@@ -44,10 +46,9 @@ end
 
 if lgc.adjustments.logs.playerLeave then
 
-    ---@param reason string
-    local function OnPlayerDropped(reason)
+    local function onPlayerDropped(reason)
         if not lgc.webhooks['playerLeave'] or type(lgc.webhooks['playerLeave']) ~= 'string' or lgc.webhooks['playerLeave'] == '' then 
-            return lgc.debug('Player leave webhook not found', 'warn')
+            return lgc.debug('Player leave webhook not found, please check the config in lgc_logs/shared/configs/webhooks.lua', 'warn')
         end
 
         local _source = source
@@ -146,17 +147,14 @@ if lgc.adjustments.logs.playerLeave then
         }, 1) 
     end
 
-    AddEventHandler('playerDropped', OnPlayerDropped)
+    AddEventHandler('playerDropped', onPlayerDropped)
 end
 
 if lgc.adjustments.logs.playerJoin then
 
-    ---@param reason string
-    ---@param source number
-    ---@return boolean
-    local function OnPlayerConnecting(name)
+    local function onPlayerConnecting(name)
         if not lgc.webhooks['playerJoin'] or type(lgc.webhooks['playerJoin']) ~= 'string' or lgc.webhooks['playerJoin'] == '' then 
-            return lgc.debug('Player join webhook not found', 'warn')
+            return lgc.debug('Player join webhook not found, please check the config in lgc_logs/shared/configs/webhooks.lua', 'warn')
         end
 
         local _source = source
@@ -230,5 +228,96 @@ if lgc.adjustments.logs.playerJoin then
         }, 1) 
     end
 
-    AddEventHandler('playerConnecting', OnPlayerConnecting)
+    AddEventHandler('playerConnecting', onPlayerConnecting)
+end
+
+if lgc.adjustments.logs.resources then
+    local function onResourceStart(resource)
+        if not lgc.webhooks['resources'] or type(lgc.webhooks['resources']) ~= 'string' or lgc.webhooks['resources'] == '' then
+            return lgc.debug('Resources webhook not found, please check the config in lgc_logs/shared/configs/webhooks.lua', 'warn')
+        end
+
+        return lgc.discordLogs.send(lgc.webhooks['resources'], {
+            username = gameName,
+            avatar_url = serverLogo,
+            embed = {
+                title = lgc.locale('resource_start_title'),
+                description = lgc.locale('resource_start_description'),
+                color = 40507,
+                footer = {
+                    text = "Made by Logic. Studios (Atoshi)"
+                    --icon_url = serverLogo
+                },
+                timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
+                fields = {
+                    {
+                        name = lgc.locale('resource_name'),
+                        value = resource,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('version'),
+                        value = GetResourceMetadata(resource, 'version') or 'Unknown',
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('author'),
+                        value = GetResourceMetadata(resource, 'author') or 'Unknown',
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('description'),
+                        value = GetResourceMetadata(resource, 'description') or 'Unknown',
+                        inline = false
+                    }
+                }
+            }
+        })
+    end
+
+    local function onResourceStop(resource)
+        if not lgc.webhooks['resources'] or type(lgc.webhooks['resources']) ~= 'string' or lgc.webhooks['resources'] == '' then
+            return lgc.debug('Resources webhook not found, please check the config in lgc_logs/shared/configs/webhooks.lua', 'warn')
+        end
+
+        return lgc.discordLogs.send(lgc.webhooks['resources'], {
+            username = gameName,
+            avatar_url = serverLogo,
+            embed = {
+                title = lgc.locale('resource_stop_title'),
+                description = lgc.locale('resource_stop_description'),
+                color = 16711680,
+                footer = {
+                    text = "Made by Logic. Studios (Atoshi)"
+                    --icon_url = serverLogo
+                },
+                timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
+                fields = {
+                    {
+                        name = lgc.locale('resource_name'),
+                        value = resource,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('version'),
+                        value = GetResourceMetadata(resource, 'version') or 'Unknown',
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('author'),
+                        value = GetResourceMetadata(resource, 'author') or 'Unknown',
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('description'),
+                        value = GetResourceMetadata(resource, 'description') or 'Unknown',
+                        inline = false
+                    }
+                }
+            }
+        })
+    end
+
+    AddEventHandler('onResourceStop', onResourceStop)
+    AddEventHandler('onResourceStart', onResourceStart)
 end

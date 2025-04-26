@@ -3,7 +3,7 @@
 -- Copyright (c) Logic. Studios - All Rights Reserved
 
 if lgc.isResourceActive('es_extended') then
-    lgc.debug('ESX bridge loaded', 'info')
+    lgc.debug('ESX detected, loading bridge...', 'info')
 
     local ESX = exports['es_extended']:getSharedObject()
 

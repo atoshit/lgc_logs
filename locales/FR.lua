@@ -27,4 +27,15 @@ lgc.locales['FR'] = {
 
     ['playerJoin_title'] = 'Connexion',
     ['playerJoin_description'] = 'Un joueur est actuellement en train de se connecter.',
+
+    ['resource_start_title'] = 'Démarrage d\'une ressource',
+    ['resource_start_description'] = 'Une ressource a été démarrée.',
+
+    ['resource_stop_title'] = 'Arrêt d\'une ressource',
+    ['resource_stop_description'] = 'Une ressource a été arrêtée.',
+    
+    ['resource_name'] = 'Nom de la ressource',
+    ['version'] = 'Version',
+    ['description'] = 'Description',
+    ['author'] = 'Auteur',
 }

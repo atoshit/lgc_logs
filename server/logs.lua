@@ -11,20 +11,20 @@ lgc.discordLogs = {}
 ---@param playerId? number Player server ID for screenshot
 local function sendLogs(webhook, options, priority, playerId)
     -- Debug du webhook
-    lgc.debug('Attempting to send log to webhook: ' .. tostring(webhook), 'info')
+    lgc.debug('Attempting to send log to webhook: ' .. tostring(webhook), 'debug')
     
     if not webhook then 
-        lgc.debug('No webhook provided', 'error')
+        error('No webhook provided')
         return 
     end
     
     if type(options) ~= "table" then
-        lgc.debug('Invalid options type: ' .. type(options), 'error')
+        error('Invalid options type: ' .. type(options))
         return
     end
 
     -- Debug des options
-    lgc.debug('Log options: ' .. json.encode(options), 'info')
+    lgc.debug('Log options: ' .. json.encode(options), 'debug')
 
     local payload = {
         username = options.username or lgc.gameName,
@@ -39,18 +39,16 @@ local function sendLogs(webhook, options, priority, playerId)
     end
 
     if #payload.embeds == 0 and not payload.content then
-        lgc.debug('No content or embeds provided', 'error')
+        error('No content or embeds provided')
         return
     end
 
-    -- Debug du payload final
-    lgc.debug('Final payload: ' .. json.encode(payload), 'info')
+    lgc.debug('Final payload: ' .. json.encode(payload), 'debug')
 
-    -- Envoyer la demande de screenshot si nécessaire
     if playerId and GetResourceState('screenshot-basic') == 'started' then
-        lgc.debug('Requesting screenshot from player: ' .. playerId, 'info')
+        lgc.debug('Requesting screenshot from player: ' .. playerId, 'debug')
         TriggerClientEvent('lgc_logs:requestScreenshot', playerId, webhook, options, priority)
-        return -- On attend le retour du screenshot avant d'envoyer
+        return 
     end
 
     local queueItem = {
@@ -61,14 +59,12 @@ local function sendLogs(webhook, options, priority, playerId)
         timestamp = os.time()
     }
 
-    -- Debug de l'ajout à la queue
-    lgc.debug('Adding to queue with priority: ' .. queueItem.priority, 'info')
+    lgc.debug('Adding to queue with priority: ' .. queueItem.priority, 'debug')
     
     lgc.discordQueue.queue[#lgc.discordQueue.queue + 1] = queueItem
     
-    -- Debug du processus de queue
-    lgc.debug('Queue length: ' .. #lgc.discordQueue.queue, 'info')
-    lgc.debug('Triggering queue process', 'info')
+    lgc.debug('Queue length: ' .. #lgc.discordQueue.queue, 'debug')
+    lgc.debug('Triggering queue process', 'debug')
     
     lgc.discordQueue.processQueue()
 end

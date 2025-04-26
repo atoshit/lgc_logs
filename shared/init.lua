@@ -37,13 +37,13 @@ setmetatable(lgc, {
     __newindex = function(t, k, v)
         if type(v) == "function" then
             exports(k, v)
-            print('^2[lgc:init] ^7Exporting function: ^5' .. k .. '^7')
+            --print('^2[lgc:init] ^7Exporting function: ^5' .. k .. '^7')
         elseif type(v) == "table" then
             local mt = getmetatable(v) or {}
             mt.__newindex = function(t2, k2, v2)
                 if type(v2) == "function" then
                     exports(k2, v2)
-                    print('^2[lgc:init] ^7Exporting function: ^5' .. k2 .. '^7')
+                    --print('^2[lgc:init] ^7Exporting function: ^5' .. k2 .. '^7')
                 end
                 rawset(t2, k2, v2)
             end

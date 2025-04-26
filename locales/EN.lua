@@ -27,4 +27,15 @@ lgc.locales['EN'] = {
 
     ['playerJoin_title'] = 'Connection',
     ['playerJoin_description'] = 'A player is currently connecting to the server.',
+
+    ['resource_start_title'] = 'Resource Started',
+    ['resource_start_description'] = 'A resource has been started.',
+
+    ['resource_stop_title'] = 'Resource Stopped',
+    ['resource_stop_description'] = 'A resource has been stopped.',
+
+    ['resource_name'] = 'Resource Name',
+    ['version'] = 'Version',
+    ['description'] = 'Description',
+    ['author'] = 'Author',
 }

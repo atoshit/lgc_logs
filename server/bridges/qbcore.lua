@@ -3,7 +3,7 @@
 -- Copyright (c) Logic. Studios - All Rights Reserved
 
 if lgc.isResourceActive('qb-core') then
-    lgc.debug('QBCore bridge loaded', 'info')
+    lgc.debug('QBCore detected, loading bridge...', 'info')
     
     local QBCore = exports['qb-core']:GetCoreObject()
 
