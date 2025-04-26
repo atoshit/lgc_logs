@@ -63,7 +63,6 @@ if lgc.adjustments.logs.playerLeave then
                 color = 16711680, 
                 footer = {
                     text = "Made by Logic. Studios (Atoshi)"
-                    --icon_url = serverLogo
                 },
                 timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
                 fields = {
@@ -169,7 +168,6 @@ if lgc.adjustments.logs.playerJoin then
                 color = 40507, 
                 footer = {
                     text = "Made by Logic. Studios (Atoshi)"
-                    --icon_url = serverLogo
                 },
                 timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
                 fields = {
@@ -246,7 +244,6 @@ if lgc.adjustments.logs.resources then
                 color = 40507,
                 footer = {
                     text = "Made by Logic. Studios (Atoshi)"
-                    --icon_url = serverLogo
                 },
                 timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
                 fields = {
@@ -272,7 +269,7 @@ if lgc.adjustments.logs.resources then
                     }
                 }
             }
-        })
+        }, 3)
     end
 
     local function onResourceStop(resource)
@@ -289,7 +286,6 @@ if lgc.adjustments.logs.resources then
                 color = 16711680,
                 footer = {
                     text = "Made by Logic. Studios (Atoshi)"
-                    --icon_url = serverLogo
                 },
                 timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
                 fields = {
@@ -315,9 +311,114 @@ if lgc.adjustments.logs.resources then
                     }
                 }
             }
-        })
+        }, 3)
     end
 
     AddEventHandler('onResourceStop', onResourceStop)
     AddEventHandler('onResourceStart', onResourceStart)
+end
+
+if lgc.adjustments.logs.chatMessage then
+    local function onChatMessage(source, name, message)
+        if not lgc.webhooks['chatMessage'] or type(lgc.webhooks['chatMessage']) ~= 'string' or lgc.webhooks['chatMessage'] == '' then
+            return lgc.debug('Chat message webhook not found, please check the config in lgc_logs/shared/configs/webhooks.lua', 'warn')
+        end
+
+        if message:sub(1, 1) == '/' then return end
+
+        local data = getPlayerInfos(source, true)
+
+        return lgc.discordLogs.send(lgc.webhooks['chatMessage'], {
+            username = gameName,
+            avatar_url = serverLogo,
+            embed = {
+                title = lgc.locale('chatMessage_title'),
+                description = lgc.locale('chatMessage_description') .. ' : ' .. message,
+                color = 38143,
+                footer = {
+                    text = "Made by Logic. Studios (Atoshi)"
+                },
+                timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
+                fields = {
+                    {
+                        name = lgc.locale('id'),
+                        value = source,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('name'),
+                        value = data.name,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('rpname'),
+                        value = data.rpname,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('group'),
+                        value = data.group,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('job'),
+                        value = data.job.label,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('isDead'),
+                        value = data.isDead,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('position'),
+                        value = data.position,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('license'),
+                        value = data.license,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('license2'),
+                        value = data.license2,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('steam'),
+                        value = data.steam,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('discord'),
+                        value = "<@" .. string.gsub(data.discord, "discord:", "") .. ">",
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('xbl'),
+                        value = data.xbl,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('live'),
+                        value = data.live,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('fivem'),
+                        value = data.fivem,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('ip'),
+                        value = data.ip,
+                        inline = false
+                    }
+                }
+            }
+        }, 3, source)
+    end
+
+    AddEventHandler('chatMessage', onChatMessage)
 end

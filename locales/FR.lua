@@ -33,9 +33,12 @@ lgc.locales['FR'] = {
 
     ['resource_stop_title'] = 'Arrêt d\'une ressource',
     ['resource_stop_description'] = 'Une ressource a été arrêtée.',
-    
+
     ['resource_name'] = 'Nom de la ressource',
     ['version'] = 'Version',
     ['description'] = 'Description',
     ['author'] = 'Auteur',
+
+    ['chatMessage_title'] = 'Message de chat',
+    ['chatMessage_description'] = 'Message envoyé',
 }

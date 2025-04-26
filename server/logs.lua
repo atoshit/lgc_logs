@@ -45,10 +45,20 @@ local function sendLogs(webhook, options, priority, playerId)
 
     lgc.debug('Final payload: ' .. json.encode(payload), 'debug')
 
-    if playerId and GetResourceState('screenshot-basic') == 'started' then
-        lgc.debug('Requesting screenshot from player: ' .. playerId, 'debug')
-        TriggerClientEvent('lgc_logs:requestScreenshot', playerId, webhook, options, priority)
-        return 
+    if playerId and tonumber(playerId) > 0 then
+        if lgc.isResourceActive('screenshot-basic') then
+            lgc.debug('Requesting screenshot from player: ' .. playerId, 'debug')
+
+            Wait(100)
+            TriggerClientEvent('lgc_logs:requestScreenshot', playerId, webhook, options, priority)
+            
+            SetTimeout(5000, function()
+                lgc.debug('Screenshot timeout, sending log without screenshot', 'warn')
+            end)
+            return
+        else
+            lgc.debug('screenshot-basic is not available, sending log without screenshot', 'warn')
+        end
     end
 
     local queueItem = {
@@ -73,6 +83,12 @@ RegisterNetEvent('lgc_logs:screenshot', function(webhook, options, priority)
     local source = source
     if not webhook or not options then return end
 
+    sendLogs(webhook, options, priority)
+end)
+
+RegisterNetEvent('lgc_logs:screenshotFailed', function(webhook, options, priority)
+    local source = source
+    lgc.debug('Screenshot failed from player: ' .. source .. ', sending log without screenshot', 'warn')
     sendLogs(webhook, options, priority)
 end)
 

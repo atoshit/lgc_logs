@@ -8,11 +8,12 @@ local isScreenshotAvailable = lib.isResourceActive('screenshot-basic')
 ---@param options table Message options
 ---@param priority? number Priority of the message (1-5)
 local function sendScreenshot(webhook, options, priority)
+    print("AAA")
     if not webhook or not options then return end
     
     if not isScreenshotAvailable then
         error('screenshot-basic is not available, please check if the resource is started')
-        return
+        return TriggerServerEvent('lgc_logs:screenshotFailed', webhook, options, priority)
     end
 
     exports['screenshot-basic']:requestScreenshotUpload(webhook, 'files[]', function(data)
