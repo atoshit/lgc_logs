@@ -15,7 +15,7 @@ local METADATA <const> = {
     description = GRM(ENV, 'description'), ---@type string
     repository = GRM(ENV, 'repository'), ---@type string<'https://github.com/atoshit/lgc_logs'>
     gameBuild = GetGameBuildNumber() ~= 0 or GetConvarInt('sv_enforceGameBuild', 0), ---@type number
-    gameName = GetConvar('sv_projectName', 'Unknown'), ---@type string
+    gameName = GetConvar('sv_projectName', 'Logic Logs'), ---@type string
     locales = {}
 }
 

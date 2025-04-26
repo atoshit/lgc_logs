@@ -23,5 +23,8 @@ lgc.locales['FR'] = {
     ['id'] = 'ID',
 
     ['playerLeave_title'] = 'Déconnexion',
-    ['playerLeave_description'] = 'Un joueur à quitté le serveur',
+    ['playerLeave_description'] = 'Un joueur à quitté le serveur.',
+
+    ['playerJoin_title'] = 'Connexion',
+    ['playerJoin_description'] = 'Un joueur est actuellement en train de se connecter.',
 }

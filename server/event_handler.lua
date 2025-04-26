@@ -12,8 +12,9 @@ local function isPlayerDead(entity)
 end
 
 ---@param player number Player
+---@param esx boolean
 ---@return table
-local function getPlayerInfos(player)
+local function getPlayerInfos(player, esx)
     local data = {}
 
     local playerPed = GetPlayerPed(player)
@@ -27,112 +28,207 @@ local function getPlayerInfos(player)
     data.live = GetPlayerIdentifierByType(player, 'live') or 'Unknown'
     data.fivem = GetPlayerIdentifierByType(player, 'fivem') or 'Unknown'
     data.ip = GetPlayerEndpoint(player) or 'Unknown'
-    data.isDead = isPlayerDead(playerPed)
-    local position = GetEntityCoords(playerPed)
-    data.position = position.x .. ',' .. position.y .. ',' .. position.z
-    data.job = lgc.getPlayerJob(player)
-    data.group = lgc.getPlayerGroup(player)
-    data.accounts = lgc.getPlayerAccounts(player)
-    data.rpname = lgc.getPlayerName(player)
+
+    if esx then
+        data.isDead = isPlayerDead(playerPed)
+        local position = GetEntityCoords(playerPed)
+        data.position = position.x .. ',' .. position.y .. ',' .. position.z
+        data.job = lgc.getPlayerJob(player)
+        data.group = lgc.getPlayerGroup(player)
+        data.accounts = lgc.getPlayerAccounts(player)
+        data.rpname = lgc.getPlayerName(player)
+    end
 
     return data
 end
 
-if lgc.adjustments.playerLeave then
-AddEventHandler('playerDropped', function(reason)
-    local _source = source
-    local data = getPlayerInfos(_source)
-    
-    lgc.discordLogs.send(lgc.webhooks['playerLeave'], {
-        username = gameName,
-        avatar_url = serverLogo,
-        embed = {
-            title = lgc.locale('playerLeave_title'),
-            description = lgc.locale('playerLeave_description') .. ' : ' .. reason,
-            color = 16711680, 
-            footer = {
-                text = "Made by Logic. Studios (Atoshi)"
-                --icon_url = serverLogo
-            },
-            timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
-            fields = {
-                {
-                    name = lgc.locale('id'),
-                    value = _source,
-                    inline = true
+if lgc.adjustments.logs.playerLeave then
+
+    ---@param reason string
+    local function OnPlayerDropped(reason)
+        if not lgc.webhooks['playerLeave'] or type(lgc.webhooks['playerLeave']) ~= 'string' or lgc.webhooks['playerLeave'] == '' then 
+            return lgc.debug('Player leave webhook not found', 'warn')
+        end
+
+        local _source = source
+        local data = getPlayerInfos(_source, true)
+        
+        return lgc.discordLogs.send(lgc.webhooks['playerLeave'], {
+            username = gameName,
+            avatar_url = serverLogo,
+            embed = {
+                title = lgc.locale('playerLeave_title'),
+                description = lgc.locale('playerLeave_description') .. ' : ' .. reason,
+                color = 16711680, 
+                footer = {
+                    text = "Made by Logic. Studios (Atoshi)"
+                    --icon_url = serverLogo
                 },
-                {
-                    name = lgc.locale('name'),
-                    value = data.name,
-                    inline = true
-                },
-                {
-                    name = lgc.locale('rpname'),
-                    value = data.rpname,
-                    inline = true
-                },
-                {
-                    name = lgc.locale('group'),
-                    value = data.group,
-                    inline = true
-                },
-                {
-                    name = lgc.locale('job'),
-                    value = data.job.label,
-                    inline = true
-                },
-                {
-                    name = lgc.locale('isDead'),
-                    value = data.isDead,
-                    inline = true
-                },
-                {
-                    name = lgc.locale('position'),
-                    value = data.position,
-                    inline = false
-                },
-                {
-                    name = lgc.locale('license'),
-                    value = data.license,
-                    inline = false
-                },
-                {
-                    name = lgc.locale('license2'),
-                    value = data.license2,
-                    inline = false
-                },
-                {
-                    name = lgc.locale('steam'),
-                    value = data.steam,
-                    inline = false
-                },
-                {
-                    name = lgc.locale('discord'),
-                    value = "<@" .. string.gsub(data.discord, "discord:", "") .. ">",
-                    inline = false
-                },
-                {
-                    name = lgc.locale('xbl'),
-                    value = data.xbl,
-                    inline = false
-                },
-                {
-                    name = lgc.locale('live'),
-                    value = data.live,
-                    inline = false
-                },
-                {
-                    name = lgc.locale('fivem'),
-                    value = data.fivem,
-                    inline = false
-                },
-                {
-                    name = lgc.locale('ip'),
-                    value = data.ip,
-                    inline = false
+                timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
+                fields = {
+                    {
+                        name = lgc.locale('id'),
+                        value = _source,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('name'),
+                        value = data.name,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('rpname'),
+                        value = data.rpname,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('group'),
+                        value = data.group,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('job'),
+                        value = data.job.label,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('isDead'),
+                        value = data.isDead,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('position'),
+                        value = data.position,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('license'),
+                        value = data.license,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('license2'),
+                        value = data.license2,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('steam'),
+                        value = data.steam,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('discord'),
+                        value = "<@" .. string.gsub(data.discord, "discord:", "") .. ">",
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('xbl'),
+                        value = data.xbl,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('live'),
+                        value = data.live,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('fivem'),
+                        value = data.fivem,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('ip'),
+                        value = data.ip,
+                        inline = false
+                    }
                 }
             }
-        }
         }, 1) 
     end
-end)
+
+    AddEventHandler('playerDropped', OnPlayerDropped)
+end
+
+if lgc.adjustments.logs.playerJoin then
+
+    ---@param reason string
+    ---@param source number
+    ---@return boolean
+    local function OnPlayerConnecting(name)
+        if not lgc.webhooks['playerJoin'] or type(lgc.webhooks['playerJoin']) ~= 'string' or lgc.webhooks['playerJoin'] == '' then 
+            return lgc.debug('Player join webhook not found', 'warn')
+        end
+
+        local _source = source
+        local data = getPlayerInfos(_source, false)
+
+        return lgc.discordLogs.send(lgc.webhooks['playerJoin'], {
+            username = gameName,
+            avatar_url = serverLogo,
+            embed = {
+                title = lgc.locale('playerJoin_title'),
+                description = lgc.locale('playerJoin_description'),
+                color = 40507, 
+                footer = {
+                    text = "Made by Logic. Studios (Atoshi)"
+                    --icon_url = serverLogo
+                },
+                timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
+                fields = {
+                    {
+                        name = lgc.locale('id'),
+                        value = _source,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('name'),
+                        value = name,
+                        inline = true
+                    },
+                    {
+                        name = lgc.locale('license'),
+                        value = data.license,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('license2'),
+                        value = data.license2,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('steam'),
+                        value = data.steam,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('discord'),
+                        value = "<@" .. string.gsub(data.discord, "discord:", "") .. ">",
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('xbl'),
+                        value = data.xbl,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('live'),
+                        value = data.live,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('fivem'),
+                        value = data.fivem,
+                        inline = false
+                    },
+                    {
+                        name = lgc.locale('ip'),
+                        value = data.ip,
+                        inline = false
+                    }
+                }
+            }
+        }, 1) 
+    end
+
+    AddEventHandler('playerConnecting', OnPlayerConnecting)
+end
