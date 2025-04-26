@@ -18,12 +18,9 @@ local function sendScreenshot(webhook, options, priority)
     exports['screenshot-basic']:requestScreenshotUpload(webhook, 'files[]', function(data)
         local resp = json.decode(data)
         if resp and resp.attachments and resp.attachments[1] then
-            -- Modifier directement l'embed existant
             if options.embed then
-                -- Ajouter le screenshot à l'embed existant
                 options.embed.image = { url = resp.attachments[1].url }
             else
-                -- Créer un nouvel embed si nécessaire
                 options.embed = {
                     title = "Screenshot",
                     color = 7506394,
@@ -32,10 +29,8 @@ local function sendScreenshot(webhook, options, priority)
                 }
             end
 
-            -- Debug du payload
             lgc.debug('Screenshot payload: ' .. json.encode(options), 'info')
 
-            -- Envoyer l'embed mis à jour
             TriggerServerEvent('lgc_logs:screenshot', webhook, options, priority)
         else
             lgc.debug('Failed to upload screenshot', 'warn')
@@ -50,7 +45,3 @@ end)
 RegisterCommand('testbridge', function()
     TriggerServerEvent('lgc_logs:testbridge')
 end)
-
-
-
-

@@ -28,214 +28,206 @@ local function getPlayerInfos(player)
     data.fivem = GetPlayerIdentifierByType(player, 'fivem') or 'Unknown'
     data.ip = GetPlayerEndpoint(player) or 'Unknown'
     data.isDead = isPlayerDead(playerPed)
-    data.position = GetEntityCoords(playerPed)
+    local position = GetEntityCoords(playerPed)
+    data.position = position.x .. ',' .. position.y .. ',' .. position.z
     data.job = lgc.getPlayerJob(player)
     data.group = lgc.getPlayerGroup(player)
     data.accounts = lgc.getPlayerAccounts(player)
     data.rpname = lgc.getPlayerName(player)
 
-    --lgc.debug(json.encode(data, { indent = true }), 'info')
-
     return data
 end
 
 AddEventHandler('playerDropped', function(reason)
-    print("playerDropped event triggered")
-    local playerInfos = {}
-
-
-    local player = source
-    local playerPed = GetPlayerPed(player)
-
-    playerInfos.name = GetPlayerName(player) or 'Unknown'
-    playerInfos.license = GetPlayerIdentifierByType(player, 'license') or 'Unknown'
-    playerInfos.license2 = GetPlayerIdentifierByType(player, 'license2') or 'Unknown'
-    playerInfos.steam = GetPlayerIdentifierByType(player, 'steam') or 'Unknown'
-    playerInfos.discord = GetPlayerIdentifierByType(player, 'discord') or 'Unknown'
-    playerInfos.xbl = GetPlayerIdentifierByType(player, 'xbl') or 'Unknown'
-    playerInfos.live = GetPlayerIdentifierByType(player, 'live') or 'Unknown'
-    playerInfos.fivem = GetPlayerIdentifierByType(player, 'fivem') or 'Unknown'
-    playerInfos.ip = GetPlayerEndpoint(player) or 'Unknown'
-    playerInfos.isDead = isPlayerDead(playerPed)
-    playerInfos.position = GetEntityCoords(playerPed)
-    playerInfos.job = lgc.getPlayerJob(player)
-    playerInfos.group = lgc.getPlayerGroup(player)
-    playerInfos.accounts = lgc.getPlayerAccounts(player)
-    playerInfos.rpname = lgc.getPlayerName(player)
-
-    print(lgc.webhooks['playerLeave'])
+    local _source = source
+    local data = getPlayerInfos(_source)
     
     lgc.discordLogs.send(lgc.webhooks['playerLeave'], {
         username = gameName,
         avatar_url = serverLogo,
-        --content = "⚠️ Action administrative importante",
         embed = {
-            title = lgc.locales['playerLeave_title'],
-            description = lgc.locales['playerLeave_description'],
-            --url = "https://ton-panel-admin.com/bans/123",
-            timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
-            color = 16711680,
+            title = lgc.locale('playerLeave_title'),
+            description = lgc.locale('playerLeave_description') .. ' : ' .. reason,
+            color = 16711680, 
             footer = {
-                text = "Made by Logic. Studios (Atoshi)",
-                --icon_url = "https://ton-logo.png"
+                text = "Made by Logic. Studios (Atoshi)"
+                --icon_url = serverLogo
             },
-            -- author = {
-            --     name = "Admin Pierre",
-            --     icon_url = "https://avatar-admin.png",
-            --     url = "https://profil-admin.com"
-            -- },
+            timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
             fields = {
                 {
-                    name = lgc.locales['name'],
-                    value = playerInfos.name,
+                    name = lgc.locale('id'),
+                    value = _source,
                     inline = true
                 },
                 {
-                    name = lgc.locales['id'],
-                    value = player,
+                    name = lgc.locale('name'),
+                    value = data.name,
                     inline = true
                 },
                 {
-                    name = lgc.locales['reason'],
-                    value = reason,
+                    name = lgc.locale('rpname'),
+                    value = data.rpname,
                     inline = true
                 },
                 {
-                    name = lgc.locales['job'],
-                    value = playerInfos.job.name .. ' - ' .. playerInfos.job.label,
+                    name = lgc.locale('group'),
+                    value = data.group,
                     inline = true
                 },
                 {
-                    name = lgc.locales['group'],
-                    value = playerInfos.group,
+                    name = lgc.locale('job'),
+                    value = data.job.label,
                     inline = true
                 },
                 {
-                    name = lgc.locales['money'],
-                    value = playerInfos.accounts.money,
+                    name = lgc.locale('isDead'),
+                    value = data.isDead,
                     inline = true
                 },
                 {
-                    name = lgc.locales['bank'],
-                    value = playerInfos.accounts.bank,
-                    inline = true
-                },
-                {
-                    name = lgc.locales['rpname'],
-                    value = playerInfos.rpname,
-                    inline = true
-                },
-                {
-                    name = lgc.locales['isDead'],
-                    value = playerInfos.isDead,
-                    inline = true
-                },
-                {
-                    name = lgc.locales['position'],
-                    value = playerInfos.position,
+                    name = lgc.locale('position'),
+                    value = data.position,
                     inline = false
                 },
                 {
-                    name = lgc.locales['license'],
-                    value = playerInfos.license,
+                    name = lgc.locale('license'),
+                    value = data.license,
                     inline = false
                 },
                 {
-                    name = lgc.locales['license2'],
-                    value = playerInfos.license2,
+                    name = lgc.locale('license2'),
+                    value = data.license2,
                     inline = false
                 },
                 {
-                    name = lgc.locales['steam'],
-                    value = playerInfos.steam,
+                    name = lgc.locale('steam'),
+                    value = data.steam,
                     inline = false
                 },
                 {
-                    name = lgc.locales['discord'],
-                    value = "<@" .. playerInfos.discord .. ">",
+                    name = lgc.locale('discord'),
+                    value = "<@" .. string.gsub(data.discord, "discord:", "") .. ">",
                     inline = false
                 },
                 {
-                    name = lgc.locales['xbl'],
-                    value = playerInfos.xbl,
+                    name = lgc.locale('xbl'),
+                    value = data.xbl,
                     inline = false
                 },
                 {
-                    name = lgc.locales['live'],
-                    value = playerInfos.live,
+                    name = lgc.locale('live'),
+                    value = data.live,
                     inline = false
                 },
                 {
-                    name = lgc.locales['fivem'],
-                    value = playerInfos.fivem,
+                    name = lgc.locale('fivem'),
+                    value = data.fivem,
                     inline = false
                 },
                 {
-                    name = lgc.locales['ip'],
-                    value = playerInfos.ip,
+                    name = lgc.locale('ip'),
+                    value = data.ip,
                     inline = false
                 }
             }
         }
-    }, 1, player)
+    }, 1) 
 end)
 
-
 RegisterNetEvent('lgc_logs:testbridge', function()
-    local source = source
+    local _source = source    
+    local data = getPlayerInfos(_source)
     
-    -- Debug prints
-    lgc.debug('Test bridge triggered by ' .. source, 'info')
-    
-    -- Récupérer les infos du joueur
-    local job = lgc.getPlayerJob(source)
-    local group = lgc.getPlayerGroup(source)
-    local accounts = lgc.getPlayerAccounts(source)
-    local name = lgc.getPlayerName(source)
-    
-    -- Debug des données
-    lgc.debug('Player data:', 'info')
-    lgc.debug('Name: ' .. name, 'info')
-    lgc.debug('Job: ' .. job.name, 'info')
-    lgc.debug('Group: ' .. group, 'info')
-    print(lgc.locales['playerLeave_title'])
-
-    print(lgc.webhooks['playerLeave'])
-    -- Envoyer le log Discord
     lgc.discordLogs.send(lgc.webhooks['playerLeave'], {
-        username = "Test Bridge",
-        timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
-        color = 16711680,
-        footer = {
-            text = "Made by Logic. Studios (Atoshi)",
-            --icon_url = "https://ton-logo.png"
-        },
+        username = gameName,
+        avatar_url = serverLogo,
         embed = {
-            title = lgc.locales['playerLeave_title'],
-            description = lgc.locales['playerLeave_description'],
-            color = 3447003, -- Bleu
+            title = lgc.locale('playerLeave_title'),
+            description = lgc.locale('playerLeave_description'),
+            color = 16711680, 
+            footer = {
+                text = "Made by Logic. Studios (Atoshi)"
+                --icon_url = serverLogo
+            },
+            timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
             fields = {
                 {
-                    name = "Joueur",
-                    value = name,
+                    name = lgc.locale('id'),
+                    value = _source,
                     inline = true
                 },
                 {
-                    name = "Job",
-                    value = job.name .. " (" .. job.label .. ")",
+                    name = lgc.locale('name'),
+                    value = data.name,
                     inline = true
                 },
                 {
-                    name = "Groupe",
-                    value = group,
+                    name = lgc.locale('rpname'),
+                    value = data.rpname,
                     inline = true
                 },
                 {
-                    name = "Argent",
-                    value = "Cash: $" .. accounts.money .. "\nBanque: $" .. accounts.bank,
+                    name = lgc.locale('group'),
+                    value = data.group,
+                    inline = true
+                },
+                {
+                    name = lgc.locale('job'),
+                    value = data.job.label,
+                    inline = true
+                },
+                {
+                    name = lgc.locale('isDead'),
+                    value = data.isDead,
+                    inline = true
+                },
+                {
+                    name = lgc.locale('position'),
+                    value = data.position,
+                    inline = false
+                },
+                {
+                    name = lgc.locale('license'),
+                    value = data.license,
+                    inline = false
+                },
+                {
+                    name = lgc.locale('license2'),
+                    value = data.license2,
+                    inline = false
+                },
+                {
+                    name = lgc.locale('steam'),
+                    value = data.steam,
+                    inline = false
+                },
+                {
+                    name = lgc.locale('discord'),
+                    value = "<@" .. string.gsub(data.discord, "discord:", "") .. ">",
+                    inline = false
+                },
+                {
+                    name = lgc.locale('xbl'),
+                    value = data.xbl,
+                    inline = false
+                },
+                {
+                    name = lgc.locale('live'),
+                    value = data.live,
+                    inline = false
+                },
+                {
+                    name = lgc.locale('fivem'),
+                    value = data.fivem,
+                    inline = false
+                },
+                {
+                    name = lgc.locale('ip'),
+                    value = data.ip,
                     inline = false
                 }
             }
         }
-    }, 1, source) -- Priorité 1 avec screenshot
+    }, 1, _source) 
 end)

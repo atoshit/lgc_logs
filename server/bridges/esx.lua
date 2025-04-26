@@ -15,6 +15,11 @@ if lgc.isResourceActive('es_extended') then
         if not xPlayer then return {name = 'Unknown', label = 'Unknown'} end
 
         local job = xPlayer.getJob()
+
+        if job.label == "Unemployed" then
+            return {name = 'unemployed', label = 'Aucun'}
+        end
+
         return {
             name = job.name or 'Unknown',
             label = job.label or 'Unknown',
