@@ -5,7 +5,7 @@
 ---@param str string
 ---@return string
 local function getLocale(str)
-    local locale = lgc.locales[lgc.adjustments.locale]
+    local locale <const> = lgc.locales[lgc.adjustments.locale]
 
     if not locale then 
         lgc.debug('No locale found for :' .. lgc.adjustments.locale, 'warn')

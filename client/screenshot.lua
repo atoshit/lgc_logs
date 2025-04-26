@@ -41,7 +41,3 @@ end
 RegisterNetEvent('lgc_logs:requestScreenshot', function(webhook, options, priority)
     sendScreenshot(webhook, options, priority)
 end)
-
-RegisterCommand('testbridge', function()
-    TriggerServerEvent('lgc_logs:testbridge')
-end)

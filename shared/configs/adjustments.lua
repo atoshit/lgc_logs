@@ -2,7 +2,7 @@
 -- Created at 2025-04-25
 -- Copyright (c) Logic. Studios - All Rights Reserved
 
-lgc.adjustments = {
+local adjustments <const> = {
     debugLevel = 3, -- 1 = info, 2 = warn, 3 = fatal / false to disable debug logs
     serverLogo = 'https://png.pngtree.com/png-clipart/20190516/original/pngtree-log-file-format-icon-design-png-image_4307740.jpg',
     locale = 'FR',
@@ -24,3 +24,5 @@ lgc.adjustments = {
         vehicle = true,
     },
 }
+
+lgc.adjustments = adjustments
